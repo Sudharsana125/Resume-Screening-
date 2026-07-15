@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Resume Screening — Talent Intelligence</title>
+  <meta name="description" content="AI-powered resume screening, semantic NLP candidate ranking, and intelligent talent matching platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     INTRO SPLASH SCREEN
+════════════════════════════════════════ -->
+<div id="introScreen" class="intro-screen">
+  <canvas id="introCanvas" class="intro-canvas"></canvas>
+
+  <!-- Top ambient scanner line -->
+  <div class="intro-scan-line"></div>
+
+  <!-- Left vertical accent -->
+  <div class="intro-vert-accent left"></div>
+  <div class="intro-vert-accent right"></div>
+
+  <div class="intro-inner">
+
+    <!-- Header badge -->
+    <div class="intro-badge" id="isBadge">
+      <span class="intro-badge-dot"></span>
+      <span>AI-Powered · NLP Engine Active</span>
+    </div>
+
+    <!-- Main Title -->
+    <div class="intro-title-group">
+      <h1 class="intro-headline">
+        <span class="ihl-white">AI RESUME</span><span class="ihl-glow" id="introTypewriter"></span><span class="intro-cursor">|</span>
+      </h1>
+      <p class="intro-desc">
+        Upload resumes. Define your job. Let the AI find, score, and rank the best talent — in seconds.
+      </p>
+    </div>
+
+    <!-- Feature pills row -->
+    <div class="intro-pills" id="introPills">
+      <div class="intro-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Resume Parsing
+      </div>
+      <div class="intro-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg>
+        Skill Extraction
+      </div>
+      <div class="intro-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Semantic Matching
+      </div>
+      <div class="intro-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        AI Ranking
+      </div>
+      <div class="intro-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        Profile Compare
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button class="intro-start-btn" id="introStartBtn">
+      <div class="isb-bg"></div>
+      <span class="isb-label">Start Screening</span>
+      <span class="isb-arrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
+      <div class="isb-ripple" id="introBtnRipple"></div>
+    </button>
+
+    <p class="intro-esc">Press <kbd>ESC</kbd> to skip</p>
+  </div>
+</div>
+
+
+
+<!-- ═══════════════════════════════════════
+     AMBIENT BACKGROUND
+════════════════════════════════════════ -->
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <canvas id="particleCanvas"></canvas>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">AI Resume</div>
+      <div class="brand-sub">Screening</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">Navigation</div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <button class="nav-item active" data-tab="dashboard">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/>
+          <rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>
+        </svg>
+      </span>
+      <span class="nav-label">Dashboard</span>
+      <span class="nav-badge" id="nb-dashboard"></span>
+    </button>
+    <button class="nav-item" data-tab="jobs">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/>
+          <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+        </svg>
+      </span>
+      <span class="nav-label">Job Descriptions</span>
+      <span class="nav-badge" id="nb-jobs">0</span>
+    </button>
+    <button class="nav-item" data-tab="upload">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </span>
+      <span class="nav-label">Upload Resumes</span>
+    </button>
+    <button class="nav-item" data-tab="candidates">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </span>
+      <span class="nav-label">Candidates</span>
+      <span class="nav-badge" id="nb-candidates">0</span>
+    </button>
+    <button class="nav-item" data-tab="rank">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </span>
+      <span class="nav-label">Rank Candidates</span>
+    </button>
+    <button class="nav-item" data-tab="compare">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+        </svg>
+      </span>
+      <span class="nav-label">Compare Candidates</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-section-label" style="margin-top:auto">System</div>
+  <div class="conn-status" id="connStatus" title="Click to configure API">
+    <div class="conn-dot" id="connDot"></div>
+    <div class="conn-info">
+      <span class="conn-label" id="connLabel">Connecting…</span>
+      <span class="conn-sub">API Server</span>
+    </div>
+    <button class="conn-edit" id="connEditBtn" title="Configure">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
+    </button>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN AREA
+════════════════════════════════════════ -->
+<div class="main-wrap">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="page-breadcrumb" id="pageBreadcrumb">Overview & Analytics</div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" class="search-input" id="globalSearch" placeholder="Search candidates, jobs…" autocomplete="off">
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="topbar-btn" id="refreshAllBtn" title="Refresh all data">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Panels -->
+  <main class="content-area">
+
+    <!-- ╔══════════════════════════════════╗
+         ║         DASHBOARD PANEL         ║
+         ╚══════════════════════════════════╝ -->
+    <section class="panel active" id="panel-dashboard">
+
+      <!-- Hero Welcome -->
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h1 class="hero-title">Intelligent Talent Matching</h1>
+          <p class="hero-desc">Powered by transformer-based semantic NLP. Screen thousands of resumes in seconds.</p>
+          <button class="hero-cta-btn" onclick="switchTab('rank')">
+            Start Screening Candidates
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+        <div class="hero-badges">
+          <span class="ai-badge">
+            <span class="ai-dot"></span>
+            AI Engine Active
+          </span>
+          <span class="ai-badge ai-badge-alt">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Semantic NLP Ready
+          </span>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-row">
+        <div class="kpi-card" data-color="blue">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+              </svg>
+            </div>
+            <span class="kpi-trend kpi-trend-up">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              Active
+            </span>
+          </div>
+          <div class="kpi-value" id="dashStatJobs" data-target="0">0</div>
+          <div class="kpi-label">Total Jobs Tracked</div>
+          <div class="kpi-bar"><span id="kpiBarJobs"></span></div>
+        </div>
+
+        <div class="kpi-card" data-color="green">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <span class="kpi-trend kpi-trend-up">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              Parsed
+            </span>
+          </div>
+          <div class="kpi-value" id="dashStatCandidates" data-target="0">0</div>
+          <div class="kpi-label">Candidates in Pool</div>
+          <div class="kpi-bar"><span id="kpiBarCandidates" class="green"></span></div>
+        </div>
+
+        <div class="kpi-card" data-color="violet">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-violet">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <span class="kpi-trend kpi-trend-neutral">Run</span>
+          </div>
+          <div class="kpi-value" id="dashStatRankings" data-target="0">0</div>
+          <div class="kpi-label">Rankings Executed</div>
+          <div class="kpi-bar"><span id="kpiBarRankings" class="violet"></span></div>
+        </div>
+
+        <div class="kpi-card" data-color="amber">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-amber">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+              </svg>
+            </div>
+            <span class="kpi-trend kpi-trend-neutral">Avg</span>
+          </div>
+          <div class="kpi-value" id="dashStatAvgExp" data-target="0">0<span style="font-size:18px;font-weight:500">y</span></div>
+          <div class="kpi-label">Avg. Experience</div>
+          <div class="kpi-bar"><span id="kpiBarAvgExp" class="amber"></span></div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dash-grid">
+
+        <!-- Experience Distribution -->
+        <div class="glass-card">
+          <div class="card-hd">
+            <div class="card-hd-left">
+              <div class="card-hd-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
+              <div>
+                <div class="card-title">Experience Distribution</div>
+                <div class="card-sub">Candidate seniority breakdown</div>
+              </div>
+            </div>
+          </div>
+          <div class="exp-chart">
+            <div class="exp-row">
+              <div class="exp-info">
+                <span class="exp-dot" style="background:var(--c-blue)"></span>
+                <div>
+                  <div class="exp-name">Entry Level</div>
+                  <div class="exp-range">0 – 2 years</div>
+                </div>
+              </div>
+              <div class="exp-bar-track"><div class="exp-bar-fill blue" id="expJuniorBar" style="width:0%"></div></div>
+              <span class="exp-count" id="expJuniorVal">0</span>
+            </div>
+            <div class="exp-row">
+              <div class="exp-info">
+                <span class="exp-dot" style="background:var(--c-green)"></span>
+                <div>
+                  <div class="exp-name">Mid Level</div>
+                  <div class="exp-range">2 – 5 years</div>
+                </div>
+              </div>
+              <div class="exp-bar-track"><div class="exp-bar-fill green" id="expMidBar" style="width:0%"></div></div>
+              <span class="exp-count" id="expMidVal">0</span>
+            </div>
+            <div class="exp-row">
+              <div class="exp-info">
+                <span class="exp-dot" style="background:var(--c-violet)"></span>
+                <div>
+                  <div class="exp-name">Senior Level</div>
+                  <div class="exp-range">5+ years</div>
+                </div>
+              </div>
+              <div class="exp-bar-track"><div class="exp-bar-fill violet" id="expSeniorBar" style="width:0%"></div></div>
+              <span class="exp-count" id="expSeniorVal">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Skills -->
+        <div class="glass-card">
+          <div class="card-hd">
+            <div class="card-hd-left">
+              <div class="card-hd-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="card-title">Top Skills</div>
+                <div class="card-sub">Most common in candidate pool</div>
+              </div>
+            </div>
+          </div>
+          <div id="topSkillsList" class="skills-cloud">
+            <div class="empty-placeholder">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <p>Upload resumes to see skills</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="glass-card card-span-full">
+          <div class="card-hd">
+            <div class="card-hd-left">
+              <div class="card-hd-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="card-title">Quick Actions</div>
+                <div class="card-sub">Common workflows at a glance</div>
+              </div>
+            </div>
+          </div>
+          <div class="qa-grid">
+            <button class="qa-card" onclick="switchTab('upload')">
+              <div class="qa-card-icon qa-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div class="qa-card-text">
+                <strong>Upload Resumes</strong>
+                <span>PDF or DOCX supported</span>
+              </div>
+              <div class="qa-arrow">→</div>
+            </button>
+            <button class="qa-card" onclick="switchTab('jobs')">
+              <div class="qa-card-icon qa-green">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </div>
+              <div class="qa-card-text">
+                <strong>Create Job</strong>
+                <span>Post a new job description</span>
+              </div>
+              <div class="qa-arrow">→</div>
+            </button>
+            <button class="qa-card" onclick="switchTab('rank')">
+              <div class="qa-card-icon qa-violet">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </div>
+              <div class="qa-card-text">
+                <strong>Run AI Ranking</strong>
+                <span>Match candidates to jobs</span>
+              </div>
+              <div class="qa-arrow">→</div>
+            </button>
+            <button class="qa-card" onclick="switchTab('candidates')">
+              <div class="qa-card-icon qa-amber">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div class="qa-card-text">
+                <strong>Browse Candidates</strong>
+                <span>View all parsed profiles</span>
+              </div>
+              <div class="qa-arrow">→</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="glass-card">
+          <div class="card-hd">
+            <div class="card-hd-left">
+              <div class="card-hd-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div>
+                <div class="card-title">Recent Activity</div>
+                <div class="card-sub">Latest system events</div>
+              </div>
+            </div>
+          </div>
+          <div id="activityFeed" class="activity-feed">
+            <div class="activity-item">
+              <div class="activity-dot activity-dot-blue"></div>
+              <div class="activity-text">
+                <span>System ready</span>
+                <span class="activity-time">just now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="glass-card ai-insights-card">
+          <div class="card-hd">
+            <div class="card-hd-left">
+              <div class="card-hd-icon violet">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 16v-4"/><path d="M12 8h.01"/>
+                </svg>
+              </div>
+              <div>
+                <div class="card-title">AI Insights</div>
+                <div class="card-sub">Smart recommendations</div>
+              </div>
+            </div>
+          </div>
+          <div id="aiInsights" class="insights-list">
+            <div class="insight-item">
+              <div class="insight-icon">💡</div>
+              <p>Upload resumes and run a ranking to see AI-powered insights about your candidate pool here.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ╔══════════════════════════════════╗
+         ║           JOBS PANEL            ║
+         ╚══════════════════════════════════╝ -->
+    <section class="panel" id="panel-jobs">
+      <div class="two-col">
+        <div class="glass-card form-card">
+          <div class="card-hd">
+            <div class="card-hd-left">
+              <div class="card-hd-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </div>
+              <div>
+                <div class="card-title">Create Job Description</div>
+                <div class="card-sub">AI will auto-extract skills from description</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="field-label">Job Title <span class="required">*</span></label>
+            <input type="text" id="jobTitle" class="field-input" placeholder="e.g. Senior Backend Engineer">
+          </div>
+          <div class="form-field">
+            <label class="field-label">Description <span class="required">*</span></label>
+            <textarea id="jobText" class="field-input field-textarea" rows="6" placeholder="Paste or type the full job description…"></textarea>
+          </div>
+          <div class="form-field">
+            <label class="field-label">
+              Required Skills
+              <span class="field-hint">Leave blank to auto-extract from description</span>
+            </label>
+            <input type="text" id="jobSkills" class="field-input" placeholder="Python, FastAPI, Docker, PostgreSQL…">
+          </div>
+          <div class="form-field">
+            <label class="field-label">Minimum Experience (years)</label>
+            <input type="number" id="jobMinExp" class="field-input" min="0" step="0.5" value="0" style="max-width:140px">
+          </div>
+          <button class="btn-primary" id="createJobBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Create Job Description
+          </button>
+          <div class="form-feedback" id="jobFormMsg"></div>
+        </div>
+
+        <div>
+          <div class="list-header">
+            <h2 class="list-title">Tracked Jobs <span class="count-badge" id="jobsCountBadge">0</span></h2>
+            <button class="btn-ghost-sm" id="refreshJobsBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <div id="jobsList" class="item-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╔══════════════════════════════════╗
+         ║          UPLOAD PANEL           ║
+         ╚══════════════════════════════════╝ -->
+    <section class="panel" id="panel-upload">
+      <div class="two-col">
+        <div>
+          <div class="glass-card">
+            <div class="card-hd">
+              <div class="card-hd-left">
+                <div class="card-hd-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="card-title">Upload Resume</div>
+                  <div class="card-sub">PDF or DOCX — AI parses in seconds</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+              <div class="dz-inner">
+                <div class="dz-icon-wrap">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+                <div class="dz-text">
+                  <p class="dz-primary">Drop your resume here or <span class="dz-link">click to browse</span></p>
+                  <p class="dz-secondary">Supports PDF and DOCX files</p>
+                </div>
+              </div>
+              <input type="file" id="fileInput" accept=".pdf,.docx" hidden multiple>
+            </div>
+
+            <div id="uploadQueue" class="upload-queue"></div>
+          </div>
+
+          <!-- Upload tips -->
+          <div class="glass-card tips-card" style="margin-top:16px">
+            <div class="tips-list">
+              <div class="tip-item">
+                <div class="tip-icon">🔍</div>
+                <div><strong>Auto-extraction</strong><br><span class="text-muted">Skills, education, contact info, and experience years are parsed automatically.</span></div>
+              </div>
+              <div class="tip-item">
+                <div class="tip-icon">🎯</div>
+                <div><strong>Best results</strong><br><span class="text-muted">Use clearly formatted resumes for highest accuracy in NLP extraction.</span></div>
+              </div>
+              <div class="tip-item">
+                <div class="tip-icon">⚡</div>
+                <div><strong>Batch upload</strong><br><span class="text-muted">Select multiple files at once to upload and parse them in parallel.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-hd">
+            <div class="card-hd-left">
+              <div class="card-hd-icon green">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </div>
+              <div>
+                <div class="card-title">Parsed Profile</div>
+                <div class="card-sub">Extracted data from latest upload</div>
+              </div>
+            </div>
+          </div>
+          <div id="lastParsed">
+            <div class="empty-placeholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <p>Upload a resume to see the AI-extracted profile</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╔══════════════════════════════════╗
+         ║        CANDIDATES PANEL         ║
+         ╚══════════════════════════════════╝ -->
+    <section class="panel" id="panel-candidates">
+      <div class="candidates-toolbar">
+        <div class="toolbar-left">
+          <h2 class="list-title">All Candidates <span class="count-badge" id="candidatesCountBadge">0</span></h2>
+        </div>
+        <div class="toolbar-right">
+          <div class="filter-bar">
+            <div class="filter-search-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" class="filter-search" id="candidateSearch" placeholder="Search by name, email, skill…" autocomplete="off">
+            </div>
+            <select class="filter-select" id="expFilter">
+              <option value="">All Experience</option>
+              <option value="entry">Entry (0–2y)</option>
+              <option value="mid">Mid (2–5y)</option>
+              <option value="senior">Senior (5+y)</option>
+            </select>
+            <button class="btn-ghost-sm" id="refreshCandidatesBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="candidatesGrid" class="candidates-grid"></div>
+    </section>
+
+    <!-- ╔══════════════════════════════════╗
+         ║           RANK PANEL            ║
+         ╚══════════════════════════════════╝ -->
+    <section class="panel" id="panel-rank">
+      <div class="glass-card rank-controls">
+        <div class="card-hd">
+          <div class="card-hd-left">
+            <div class="card-hd-icon violet">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">AI Candidate Ranking</div>
+              <div class="card-sub">Semantic NLP matching against job requirements</div>
+            </div>
+          </div>
+        </div>
+        <div class="rank-form">
+          <div class="form-field rank-select-field">
+            <label class="field-label">Select Job Description</label>
+            <select id="rankJobSelect" class="field-input field-select">
+              <option value="">Choose a job description…</option>
+            </select>
+          </div>
+          <div class="form-field" style="max-width:120px">
+            <label class="field-label">Top N <span class="field-hint">optional</span></label>
+            <input type="number" id="rankTopN" class="field-input" min="1" placeholder="All">
+          </div>
+          <div class="form-field rank-btn-field">
+            <label class="field-label">&nbsp;</label>
+            <button class="btn-primary" id="runRankBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Run AI Ranking
+            </button>
+          </div>
+        </div>
+        <div class="form-feedback" id="rankFormMsg"></div>
+      </div>
+
+      <div id="rankResults" class="rank-results"></div>
+    </section>
+
+  </main><!-- /content-area -->
+</div><!-- /main-wrap -->
+
+<!-- ═══════════════════════════════════════
+     CANDIDATE DETAIL MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="candidateModal">
+  <div class="modal-panel" id="candidateModalPanel">
+    <div class="modal-close-btn" id="closeCandidateModal">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <div id="candidateModalBody"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     API CONFIG MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="connModal">
+  <div class="modal-box">
+    <div class="modal-box-hd">
+      <div class="modal-box-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
+        </svg>
+      </div>
+      <div>
+        <h3>API Configuration</h3>
+        <p>Connect to your FastAPI backend server</p>
+      </div>
+    </div>
+    <input type="text" id="apiUrlInput" class="field-input" placeholder="http://localhost:8000">
+    <div class="modal-box-footer">
+      <button class="btn-ghost-sm" id="connCancel">Cancel</button>
+      <button class="btn-primary btn-sm" id="connSave">Save & Connect</button>
+    </div>
+  </div>
+</div>
+
+    <!-- ═══════════════════════════════════════
+         PANEL: COMPARE
+    ════════════════════════════════════════ -->
+    <div class="panel" id="panel-compare">
+      <div class="glass-card">
+        <div class="card-hd">
+          <div class="card-hd-left">
+            <div class="card-hd-icon violet">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Compare Candidates</div>
+              <div class="card-sub">Side-by-side technical skill and experience comparison</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-select-row">
+          <div class="form-field" style="margin:0">
+            <label class="field-label">Candidate A</label>
+            <select class="field-input field-select" id="compareCandA">
+              <option value="">Select a candidate…</option>
+            </select>
+          </div>
+          <div class="compare-vs-badge">VS</div>
+          <div class="form-field" style="margin:0">
+            <label class="field-label">Candidate B</label>
+            <select class="field-input field-select" id="compareCandB">
+              <option value="">Select a candidate…</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="compareResults" class="compare-grid">
+          <div class="compare-empty">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <p>Select two candidates above to see a detailed side-by-side comparison of their skills, experience, and education.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

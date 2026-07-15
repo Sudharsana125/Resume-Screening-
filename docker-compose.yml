@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: resume_screening_postgres
+    environment:
+      POSTGRES_USER: resume_user
+      POSTGRES_PASSWORD: resume_pass
+      POSTGRES_DB: resume_screening
+    ports:
+      - "5432:5432"
+    volumes:
+      - resume_pg_data:/var/lib/postgresql/data
+
+volumes:
+  resume_pg_data:
