@@ -9,33 +9,27 @@ modify anything in `app/` — it just talks to your existing endpoints over HTTP
 Any static file server works. From this folder:
 
 ```bash
-python3 -m http.server 5173
+python -m http.server 5173
 ```
 
 Then open `http://localhost:5173`.
 
-On first load, click the connection pill in the top-right corner and enter
-your API's URL (defaults to `http://localhost:8000`). It's remembered in the
-browser for next time.
+On first load, sign in with the local demo account:
 
-## One setting you may need on the backend: CORS
+- Email: `recruiter@demo.com`
+- Password: `demo123`
 
-Your FastAPI app doesn't currently enable CORS, so if the frontend is served
-from a different origin/port than the API (which it will be, per above), the
-browser will block the requests. This isn't something the frontend can fix —
-it has to be allowed server-side. Since you asked not to touch the backend,
-here's the snippet to add yourself in `app/main.py` (right after `app = FastAPI(...)`)
-if you hit CORS errors in the browser console:
+After signing in, click the connection pill in the bottom-left corner to
+configure the API URL if needed. It defaults to `http://localhost:8000` and is
+remembered in the browser.
 
-```python
-from fastapi.middleware.cors import CORSMiddleware
+## Backend connection
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],       # or restrict to your frontend's origin
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+The FastAPI app already enables CORS for the frontend, so the two local servers
+can run on different ports. Start the API from the project root with:
+
+```bash
+python -m uvicorn app.main:app --reload --port 8000
 ```
 
 ## What's here
