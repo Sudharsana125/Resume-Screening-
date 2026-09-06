@@ -54,13 +54,45 @@ similarity combined with structured skill-overlap matching.
 - **Graceful degradation**: the ranking engine tries to load a `sentence-transformers` model (any BERT/RoBERTa-family checkpoint) and automatically falls back to TF-IDF cosine similarity if the model/weights aren't available (e.g. no internet access, low memory). The system stays usable in constrained environments rather than crashing.
 - **Explainability**: every ranking result includes `matched_skills` and `missing_skills`, not just a bare score, so a recruiter can see *why* a candidate ranked where they did.
 
+## 🖥️ Frontend Preview
+
+### 🚀 AI Resume Screening — Landing Page
+
+<p align="center">
+  <img src="Screenshots/landing-page.png" alt="AI Resume Screening Landing Page" width="100%">
+</p>
+
+### 📊 Dashboard
+
+<p align="center">
+  <img src="Screenshots/dashboard.png" alt="AI Resume Screening Dashboard" width="100%">
+</p>
+
+### 📤 Upload Resumes
+
+<p align="center">
+  <img src="Screenshots/upload-resumes.png" alt="Upload Resumes Page" width="100%">
+</p>
+
+### 👥 Candidates
+
+<p align="center">
+  <img src="Screenshots/candidates.png" alt="Candidates Page" width="100%">
+</p>
+
 ## Setup
 
 ### 1. Install dependencies
 
 ```bash
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+
+# macOS/Linux
+source venv/bin/activate
+
+# Windows PowerShell
+venv\Scripts\Activate.ps1
+
 pip install -r requirements.txt
 
 # Download the spaCy English model (small, fast; en_core_web_trf is more
@@ -84,7 +116,8 @@ Or point `DATABASE_URL` in your `.env` at any existing Postgres instance.
 ### 3. Configure environment
 
 ```bash
-cp .env.example .env
+cp .env.example .env                 # macOS/Linux
+Copy-Item .env.example .env          # Windows PowerShell
 # edit .env if needed (DB credentials, embedding model, score weights)
 ```
 
@@ -97,6 +130,23 @@ uvicorn app.main:app --reload --port 8000
 Interactive API docs: `http://localhost:8000/docs`
 
 Tables are created automatically on startup (`init_db()` in `app/main.py`).
+
+### 5. Run the frontend
+
+In a second terminal:
+
+```bash
+cd frontend
+python -m http.server 5173
+```
+
+Open `http://localhost:5173`. The frontend connects to the API at
+`http://localhost:8000` by default.
+
+The local frontend login uses these demo credentials:
+
+- Email: `recruiter@demo.com`
+- Password: `demo123`
 
 ## API Walkthrough
 
@@ -135,7 +185,11 @@ Rankings are persisted, so `GET /rank/{job_id}` retrieves the last computed rank
 ## Standalone pipeline demo (no API/DB needed)
 
 ```bash
+# macOS/Linux
 PYTHONPATH=. python tests/test_pipeline_demo.py path/to/resume.pdf path/to/resume2.docx
+
+# Windows PowerShell
+$env:PYTHONPATH='.'; python tests/test_pipeline_demo.py path/to/resume.pdf path/to/resume2.docx
 ```
 Prints the extracted profile and ranking score against a built-in sample "Senior Backend Engineer" JD — useful for quickly checking parsing/extraction quality on real resumes.
 
