@@ -144,6 +144,92 @@
 })();
 
 /* ─────────────────────────────────────────────────────────────
+   LOGIN ACCESS GATE
+───────────────────────────────────────────────────────────── */
+(function LoginController() {
+  const screen = document.getElementById("loginScreen");
+  const form = document.getElementById("loginForm");
+  if (!screen || !form) return;
+
+  const email = document.getElementById("loginEmail");
+  const password = document.getElementById("loginPassword");
+  const feedback = document.getElementById("loginFeedback");
+  const submit = document.getElementById("loginSubmit");
+  const remember = document.getElementById("rememberLogin");
+  const sessionKey = "ai_resume_authenticated";
+  const savedEmail = localStorage.getItem("ai_resume_login_email");
+
+  document.body.classList.add("login-active");
+  if (savedEmail) { email.value = savedEmail; remember.checked = true; }
+  if (sessionStorage.getItem(sessionKey) || localStorage.getItem(sessionKey)) unlock();
+
+  document.getElementById("togglePassword")?.addEventListener("click", function () {
+    const showing = password.type === "text";
+    password.type = showing ? "password" : "text";
+    this.classList.toggle("visible", !showing);
+    this.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+  });
+
+  document.getElementById("demoLogin")?.addEventListener("click", () => {
+    email.value = "recruiter@demo.com";
+    password.value = "demo123";
+    feedback.textContent = "Demo credentials filled in. Select Enter workspace.";
+    feedback.className = "login-feedback ok";
+  });
+
+  document.getElementById("forgotPassword")?.addEventListener("click", () => {
+    feedback.textContent = "For this local demo, use recruiter@demo.com / demo123.";
+    feedback.className = "login-feedback";
+  });
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const normalizedEmail = email.value.trim().toLowerCase();
+    if (!normalizedEmail || !email.checkValidity()) return showError("Enter a valid work email.");
+    if (!password.value) return showError("Enter your password to continue.");
+    if (normalizedEmail !== "recruiter@demo.com" || password.value !== "demo123") return showError("Those credentials do not match the local demo account.");
+    submit.disabled = true;
+    submit.querySelector("span").textContent = "Opening workspace…";
+    if (remember.checked) {
+      localStorage.setItem(sessionKey, "true");
+      localStorage.setItem("ai_resume_login_email", normalizedEmail);
+    } else {
+      sessionStorage.setItem(sessionKey, "true");
+      localStorage.removeItem(sessionKey);
+      localStorage.removeItem("ai_resume_login_email");
+    }
+    setTimeout(unlock, 350);
+  });
+
+  function showError(message) {
+    feedback.textContent = message;
+    feedback.className = "login-feedback";
+    password.focus();
+  }
+
+  function unlock() {
+    screen.classList.add("is-hidden");
+    document.body.classList.remove("login-active");
+    setTimeout(() => { screen.style.display = "none"; }, 550);
+  }
+
+  window.addEventListener("ai-resume-logout", () => {
+    screen.style.display = "flex";
+    requestAnimationFrame(() => screen.classList.remove("is-hidden"));
+    document.body.classList.add("login-active");
+    form.reset();
+    password.type = "password";
+    document.getElementById("togglePassword")?.classList.remove("visible");
+    document.getElementById("togglePassword")?.setAttribute("aria-label", "Show password");
+    submit.disabled = false;
+    submit.querySelector("span").textContent = "Enter workspace";
+    feedback.textContent = "";
+    sessionStorage.removeItem(sessionKey);
+    localStorage.removeItem(sessionKey);
+  });
+})();
+
+/* ─────────────────────────────────────────────────────────────
    MAIN APPLICATION
 ───────────────────────────────────────────────────────────── */
 (() => {
@@ -464,6 +550,10 @@
     await loadAll();
     setTimeout(() => this.classList.remove("spinning"), 600);
     toast("Data Refreshed", "All panels have been updated", "info");
+  });
+
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    window.dispatchEvent(new Event("ai-resume-logout"));
   });
 
   /* ─────────────────────────────────────
