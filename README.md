@@ -1,5 +1,18 @@
 # Automated Resume Screening and Ranking System
 
+## 🛠️ Tech Stack
+
+- **Backend:** FastAPI
+- **Programming Language:** Python
+- **NLP:** spaCy, NER, PhraseMatcher
+- **Machine Learning:** Sentence Transformers, BERT/RoBERTa
+- **Fallback Similarity:** TF-IDF
+- **Database:** PostgreSQL
+- **ORM:** SQLAlchemy
+- **Document Processing:** pdfplumber, python-docx
+- **Deployment:** Docker
+- **API Documentation:** Swagger / OpenAPI
+
 An AI system that parses resumes (PDF/DOCX), extracts skills via NLP/NER, and
 ranks candidates against a job description using transformer-based semantic
 similarity combined with structured skill-overlap matching.
