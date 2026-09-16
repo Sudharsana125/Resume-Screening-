@@ -44,3 +44,5 @@ python -m uvicorn app.main:app --reload --port 8000
   skill chips.
 
 All views pull live from your API — nothing is hardcoded or mocked.
+
+The project goal is to screen the resume with AI powered and assign the ranking level to each candidates 
